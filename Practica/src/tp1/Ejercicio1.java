@@ -4,19 +4,19 @@ public class Ejercicio1 {
 
 	public static void main(String[] args) {
 		Array arr = new Array(Integer.parseInt(args[0]));
-		arr.fillRandom();
-		
+		arr.fillRandom(10000);
+
 		System.out.println("Desordenado:");
-		arr.printArr();
-		
+		arr.print();
+
 		long time = arr.bubbleSort();
-		
+
 		System.out.println("Ordenado:");
-		arr.printArr();
-		
-		System.out.println("Tiempo que tardó en ordenar: " + time);
+		arr.print();
+
+		System.out.println("Tiempo que tardï¿½ en ordenar: " + time);
 	}
 
-	// Complejidad O(N^2) --> al duplicar el tamaño, cuadruplica lo q tarda aprox
-	
+	// Complejidad O(N^2) --> al duplicar el tamaï¿½o, cuadruplica lo q tarda aprox
+
 }
