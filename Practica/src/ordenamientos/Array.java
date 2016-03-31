@@ -193,7 +193,7 @@ public class Array {
 		int i = low+1;
 		int j = high;
 
-		while (i <= j) { // asi i termina apuntando al lugar siguiente donde debe ir el pivote
+		while (i <= j) { // asi j termina apuntando al lugar donde debe ir el pivote
 			if (arr[i] > pivot)
 				swap(i,j--);
 			else
