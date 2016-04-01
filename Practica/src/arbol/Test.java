@@ -6,8 +6,8 @@ public class Test {
 		Tree tree = new Tree();
 
 		tree.insert(50);
-		tree.insert(30);
-		tree.insert(36);
+		tree.insert(55);
+		tree.insert(60);
 		tree.insert(75);
 		tree.insert(63);
 		tree.insert(87);
