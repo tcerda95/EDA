@@ -1,0 +1,41 @@
+package tp2;
+
+public class BaseList<T> {
+	private T value;
+	private BaseList<T> next;
+	
+	public BaseList() {
+		this(null, null);
+	}
+	
+	public BaseList(T v) {
+		this(v, null);
+	}
+	
+	public BaseList(T v, BaseList<T> n) {
+		value = v;
+		next = n;
+	}
+	
+	public BaseList<T> add(T value) {
+		return new BaseList<T>(value, next);
+	}
+	
+	public BaseList<T> remove(T v) {
+		if (value.equals(v))
+			return next;
+		if (next != null)
+			next = next.remove(v);
+		return this;
+	}
+	
+	public boolean contains(T v) {
+		if (value.equals(v))
+			return true;
+		if (next != null)
+			return next.contains(v);
+		return false;
+	}
+	
+	
+}

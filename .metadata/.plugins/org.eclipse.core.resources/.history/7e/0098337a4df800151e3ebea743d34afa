@@ -1,0 +1,25 @@
+package tp2;
+
+public class BaseList<T> {
+	private T value;
+	private BaseList<T> next;
+	
+	public BaseList() {
+		this(null, null);
+	}
+	
+	public BaseList(T v) {
+		this(v, null);
+	}
+	
+	public BaseList(T v, BaseList<T> n) {
+		value = v;
+		next = n;
+	}
+	
+	public void add(T value) {
+		return new BaseList<T>(value, next);
+	}
+	
+	
+}

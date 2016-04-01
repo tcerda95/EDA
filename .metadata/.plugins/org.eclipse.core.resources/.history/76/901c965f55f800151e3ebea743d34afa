@@ -1,0 +1,16 @@
+package tp2;
+
+public class TestBaseList {
+
+	public static void main(String[] args) {
+		BaseList<Integer> list = new BaseList<Integer>();
+		list = list.add(2);
+		list = list.add(5);
+		list = list.add(7);
+		
+		list.map(o -> o*o);
+
+		System.out.println(list.toString());
+	}
+
+}

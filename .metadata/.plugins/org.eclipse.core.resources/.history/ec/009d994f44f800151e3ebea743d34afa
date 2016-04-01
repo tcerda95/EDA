@@ -1,0 +1,136 @@
+package tp2;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+
+public class ListSet<T> implements Set<T>{
+	private Node<T> head;
+	private int size;
+	
+	@Override
+	public boolean add(T value) {
+		boolean contains = contains(value);
+		
+		if (!contains) {
+			head = new Node<T>(value, head);
+			size += 1;
+		}
+		
+		return contains;
+	}
+	
+	@Override
+	public boolean contains(Object value) {
+		for(T currentValue : this)
+			if (value.equals(currentValue))
+				return true;
+		return false;
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends T> arg0) {
+		int oldSize = size();
+		for (T value : arg0)
+			add(value);
+		return size != oldSize;
+	}
+
+	@Override
+	public void clear() {
+		head = null;
+		size = 0;
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> arg0) {
+		for (Object value : arg0)
+			if (!contains(value))
+				return false;
+		return true;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return size() == 0;
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		
+		return new Iterator<T>() {
+			private Node<T> current = head;
+			
+			@Override
+			public boolean hasNext() {
+				return current != null;
+			}
+
+			@Override
+			public T next() {
+				T value = current.value;
+				current = current.next;
+				return value;
+			}
+			
+		};
+	}
+
+	@Override
+	public boolean remove(Object arg0) {
+		int oldSize = size();
+		head = remove(arg0, head);
+		return size != oldSize;
+	}
+	
+	private Node<T> remove(Object value, Node<T> n) {
+		if (n != null) {
+			if (n.value.equals(value)) {
+				size -= 1;
+				return n.next;
+			}
+			n.next = remove(value, n.next);
+		}
+		return n;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> arg0) {
+		int oldSize = size();
+		
+		return oldSize != size;
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int size() {
+		return size;
+	}
+
+	@Override
+	public Object[] toArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T[] toArray(T[] arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private static class Node<T> {
+		private T value;
+		private Node<T> next;
+		
+		public Node(T v, Node<T> n) {
+			value = v;
+			next = n;
+		}
+	}
+}
