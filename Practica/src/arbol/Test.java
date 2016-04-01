@@ -18,10 +18,14 @@ public class Test {
 
 		tree.display();
 
+		System.out.println("Height: " + tree.height());
+
 		System.out.println();
 		System.out.println(tree.contains(64));
 		tree.delete(50);
 		tree.display();
+
+		System.out.println("Height: " + tree.height());
 	}
 
 }
