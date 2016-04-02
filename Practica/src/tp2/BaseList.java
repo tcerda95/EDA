@@ -17,18 +17,18 @@ public class BaseList<T> {
 		next = n;
 	}
 
-	public BaseList<T> add(T v) {
-		if (value == null) {
-			value = v;
-			return this;
+	public void add(T v) {
+		if (value != null) {
+			BaseList<T> list = new BaseList<T> (value, next);
+			next = list;
 		}
-		return new BaseList<T>(v, this);
+		value = v;
 	}
 
 	public BaseList<T> remove(T v) {
 		return remove(v, this);
 	}
-	
+
 	private BaseList<T> remove(T v, BaseList<T> n) {
 		if (n == null)
 			return n;
@@ -41,7 +41,7 @@ public class BaseList<T> {
 	public boolean contains(T v) {
 		return contains(v, this);
 	}
-	
+
 	private boolean contains(T v, BaseList<T> n) {
 		if (n == null)
 			return false;
@@ -49,7 +49,7 @@ public class BaseList<T> {
 			return true;
 		return contains(v, n.next);
 	}
-	
+
 	public int count (Condition<T> condition) {
 		return count(condition, this);
 	}
@@ -59,29 +59,29 @@ public class BaseList<T> {
 			return 0;
 		return condition.eval(n.value) ? 1 + count(condition, n.next) : count(condition, n.next);
 	}
-	
+
 	public BaseList<T> filter(Condition<T> condition) {
 		return filter(condition, this);
 	}
-	
+
 	private BaseList<T> filter(Condition<T> condition, BaseList<T> n) {
 		if (n == null)
 			return new BaseList<T>();
 		BaseList<T> list = filter(condition, n.next);
 		if (condition.eval(n.value))
-			list = list.add(n.value);
+			list.add(n.value);
 		return list;
 	}
-	
+
 	public <S> BaseList<S> map(Function<T,S> f) {
 		return map(f, this);
 	}
-	
+
 	private <S> BaseList<S> map(Function<T,S> f, BaseList<T> n) {
 		if (n == null)
 			return new BaseList<S>();
 		BaseList<S> list = map(f, n.next);
-		list = list.add(f.eval(n.value));
+		list.add(f.eval(n.value));
 		return list;
 	}
 
@@ -94,11 +94,11 @@ public class BaseList<T> {
 			return initial;
 		return inject(f, f.eval(initial, n.value), n.next);
 	}
-	
+
 	public String toString() {
 		return new String(toString(this));
 	}
-	
+
 	private StringBuffer toString(BaseList<T> n) {
 		if (n == null)
 			return new StringBuffer();

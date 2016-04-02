@@ -8,16 +8,23 @@ import java.util.Set;
 public class ListSet<T> implements Set<T>{
 	private Node<T> first;
 	private int size;
-	
+
+	public ListSet<T> reverse() {
+		ListSet<T> list = new ListSet<T>();
+		for (T value : this)
+			list.add(value);
+		return list;
+	}
+
 	@Override
 	public boolean add(T value) {
 		boolean contains = contains(value);
-		
+
 		if (!contains) {
 			first = new Node<T>(value, first);
 			size += 1;
 		}
-		
+
 		return contains;
 	}
 
@@ -58,10 +65,10 @@ public class ListSet<T> implements Set<T>{
 
 	@Override
 	public Iterator<T> iterator() {
-		
+
 		return new Iterator<T>() {
 			private Node<T> current = first;
-			
+
 			@Override
 			public boolean hasNext() {
 				return current != null;
@@ -73,7 +80,7 @@ public class ListSet<T> implements Set<T>{
 				current = current.next;
 				return value;
 			}
-			
+
 		};
 	}
 
@@ -98,10 +105,10 @@ public class ListSet<T> implements Set<T>{
 	@Override
 	public boolean removeAll(Collection<?> arg0) {
 		boolean modified = false;
-		
+
 		for (Object value : arg0)
 			modified = remove(value) || modified;
-		
+
 		return modified;
 	}
 
@@ -111,7 +118,7 @@ public class ListSet<T> implements Set<T>{
 
 		Node<T> prev = null;
 		Node<T> current = first;
-		
+
 		while (current != null) {
 			if (!arg0.contains(current.value)) {
 				size -= 1;
@@ -123,7 +130,7 @@ public class ListSet<T> implements Set<T>{
 			}
 			else
 				prev = current;
-			
+
 			current = current.next;
 		}
 
@@ -152,23 +159,23 @@ public class ListSet<T> implements Set<T>{
 			array = (E[]) Array.newInstance(arg0.getClass(), size());
 
 		int i = 0;
-		for (T value : this) {				
+		for (T value : this) {
 			array[i++] = (E) value;
 		}
 
 		return array;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuffer str = new StringBuffer();
-		
+
 		for (T value : this)
 			str.append(value.toString() + " ");
-		
+
 		return new String(str);
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == this)
@@ -180,7 +187,7 @@ public class ListSet<T> implements Set<T>{
 			return false;
 		return set.containsAll(this) && this.containsAll(set);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return 1;
@@ -189,7 +196,7 @@ public class ListSet<T> implements Set<T>{
 	private static class Node<T> {
 		private T value;
 		private Node<T> next;
-		
+
 		public Node(T v, Node<T> n) {
 			value = v;
 			next = n;
