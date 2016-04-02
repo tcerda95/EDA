@@ -9,13 +9,6 @@ public class ListSet<T> implements Set<T>{
 	private Node<T> first;
 	private int size;
 
-	public ListSet<T> reverse() {
-		ListSet<T> list = new ListSet<T>();
-		for (T value : this)
-			list.add(value);
-		return list;
-	}
-
 	@Override
 	public boolean add(T value) {
 		boolean contains = contains(value);
@@ -164,6 +157,28 @@ public class ListSet<T> implements Set<T>{
 		}
 
 		return array;
+	}
+
+	public ListSet<T> getReversed() {
+		ListSet<T> list = new ListSet<T>();
+		for (T value : this)
+			list.add(value);
+		return list;
+	}
+
+	public void reverse() {
+		Node<T> prev = null;
+		Node<T> current = first;
+		Node<T> next;
+
+		while (current != null) {
+			next = current.next;
+			current.next = prev;
+			prev = current;
+			current = next;
+		}
+
+		first = prev;
 	}
 
 	@Override

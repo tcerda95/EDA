@@ -8,6 +8,10 @@ public class TestBaseList {
 		list.add(5);
 		list.add(7);
 
+		System.out.println(list);
+		list = list.reverse();
+		System.out.println(list);
+
 		BaseList<Integer> list2 = list.map(a -> 2*a);
 
 		System.out.println(list2.contains(4));

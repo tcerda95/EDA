@@ -17,6 +17,27 @@ public class BaseList<T> {
 		next = n;
 	}
 
+	/**
+	 * Revierte la lista. Debe invocarse de la siguiente manera:
+	 * 		list = list.reverse();
+	 * ya que la referencia a la lista original quedará inutilizable.
+	 * @return la cabeza de la lista revertida
+	 */
+	public BaseList<T> reverse() {
+		BaseList<T> prev = null;
+		BaseList<T> current = this;
+		BaseList<T> next;
+
+		while (current != null) {
+			next = current.next;
+			current.next = prev;
+			prev = current;
+			current = next;
+		}
+
+		return prev;
+	}
+
 	public void add(T v) {
 		if (value != null) {
 			BaseList<T> list = new BaseList<T> (value, next);
