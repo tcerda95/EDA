@@ -8,6 +8,8 @@ import java.util.List;
 public class OrderedList<T> implements Iterable<T> {
 
 	public static <E> OrderedList<E> otherMerge(List<OrderedList<E>> lists) {
+		long startTime = System.currentTimeMillis();
+
 		List<Node<E>> nodes = new ArrayList<>();
 		OrderedList<E> newList = new OrderedList<E>(lists.get(0).cmp);
 
@@ -15,7 +17,7 @@ public class OrderedList<T> implements Iterable<T> {
 			nodes.add(list.first);
 
 		int merged = 0;
-		int min;
+		int [] min = new int[nodes.size()]; // guardamos los índices de los nodos minimales
 		E minValue;
 
 		newList.first = new Node<E>();
@@ -23,25 +25,29 @@ public class OrderedList<T> implements Iterable<T> {
 		Node<E> current;
 
 		while (merged < nodes.size()) {
-			min = merged;
-			minValue = nodes.get(min).value;
+			int j = 0;
+			min[j++] = merged;
+			minValue = nodes.get(min[0]).value;
 
 			for (int i = merged+1; i < nodes.size(); i++) {
 				E value = nodes.get(i).value;
-				if (prev.value != null && prev.value.equals(value)) {
-					value = nodes.get(i).next.value;
-					nodes.set(i, nodes.get(i).next);
+				int comp = newList.cmp.compare(value, minValue);
+				if (comp < 0) {
+					j = 0;
+					min[j++] = i;
+					minValue = nodes.get(min[0]).value;
 				}
-
-				if (newList.cmp.compare(value, minValue) < 0) {
-					min = i;
-					minValue = nodes.get(min).value;
-				}
+				else if (comp == 0)
+					min[j++] = i;
 			}
 
-			nodes.set(min, nodes.get(min).next);  // min = min.next
-			if (nodes.get(min) == null)
-				swap(nodes, merged++, min);
+			for (int i = 0; i < j; i++) {
+				Node<E> next = nodes.get(min[i]).next;
+				if (next == null)
+					swap(nodes, merged++, min[i]);
+				else
+					nodes.set(min[i], next);
+			}
 
 			current = new Node<E>(minValue);
 			prev.next = current;
@@ -49,6 +55,9 @@ public class OrderedList<T> implements Iterable<T> {
 		}
 
 		newList.first = newList.first.next;
+
+		long endTime = System.currentTimeMillis();
+		System.out.println("Time elapsed, otherMerge: " + (endTime - startTime));
 		return newList;
 	}
 
@@ -59,7 +68,13 @@ public class OrderedList<T> implements Iterable<T> {
 	}
 
 	public static <E> OrderedList<E> merge(List<OrderedList<E>> lists) {
-		return merge(lists, 0, lists.size()-1);
+		long startTime = System.currentTimeMillis();
+		OrderedList<E> list = merge(lists, 0, lists.size()-1);
+		long endTime = System.currentTimeMillis();
+
+		System.out.println("Time elapsed, merge: " + (endTime - startTime));
+
+		return list;
 	}
 
 	private static <E> OrderedList<E> merge (List<OrderedList<E>> lists, int left, int right) {
@@ -80,7 +95,7 @@ public class OrderedList<T> implements Iterable<T> {
 		Node<E> nodeA = a.first;
 		Node<E> nodeB = b.first;
 
-		list.first = new Node<E>(); // un first vacio es necesario para que prev no comience null
+		list.first = new Node<E>(); // un first vacio para que prev no comience null
 		Node<E> prev = list.first;
 		Node<E> current;
 
@@ -154,15 +169,45 @@ public class OrderedList<T> implements Iterable<T> {
 		cmp = c;
 	}
 
+	public boolean isOrdered() {
+		Node<T> current = first;
+		while (current.next != null) {
+			if (cmp.compare(current.value, current.next.value) >= 0)
+				return false;
+			current = current.next;
+		}
+		return true;
+	}
+
+	public void addIter(T value) {
+		Node<T> prev = null;
+		Node<T> current = first;
+		int comp = 1;
+
+		while(current != null && (comp = cmp.compare(current.value, value)) < 0) {
+			prev = current;
+			current = current.next;
+		}
+
+		Node<T> newNode = new Node<T>(value, current);
+
+		if (prev == null && comp != 0)  // sin repetidos
+			first = newNode;
+		else if (comp != 0)
+			prev.next = newNode;
+
+	}
+
 	public void add(T value) {
 		first = add(value, first);
 	}
 
 	private Node<T> add(T value, Node<T> n) {
-		if (n == null || cmp.compare(n.value, value) > 0)
+		int comp;
+		if (n == null || (comp = cmp.compare(n.value, value)) > 0)
 			return new Node<T>(value, n);
-
-		n.next = add(value, n.next);
+		else if (comp < 0) // sin repetidos
+			n.next = add(value, n.next);
 		return n;
 	}
 
@@ -199,6 +244,15 @@ public class OrderedList<T> implements Iterable<T> {
 		};
 	}
 
+	public boolean isEmpty() {
+		return first != null;
+	}
+
+	public void fillRandom(int count, Randomizer<T> rand) {
+		for (int i = 0; i < count; i++)
+			addIter(rand.next());
+	}
+
 	@Override
 	public String toString() {
 		StringBuffer str = new StringBuffer();
@@ -207,9 +261,5 @@ public class OrderedList<T> implements Iterable<T> {
 			str.append(value.toString() + " ");
 
 		return new String(str);
-	}
-
-	public boolean isEmpty() {
-		return first != null;
 	}
 }
