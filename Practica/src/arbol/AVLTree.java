@@ -14,6 +14,7 @@ public class AVLTree<T> {
 		root = insert(value, root);
 	}
 
+	// TODO: están mal los factores de balance luego de rotaciones
 	private Node<T> insert(T value, Node<T> n) {
 		if (n == null)
 			return new Node<T>(value);

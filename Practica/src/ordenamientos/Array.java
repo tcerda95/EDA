@@ -27,7 +27,7 @@ public class Array {
 	public int contains(int n) {
 		for (int i = 0; i < size; i++)
 			if(arr[i] == n)
-				return n;
+				return i;
 		return -1;
 	}
 
