@@ -17,7 +17,6 @@ public class HeapSortTest {
 		array.insert(123);
 		array.insert(12);
 		array.insert(1);
-		array.insert(13);
 		array.insert(231);
 		array.insert(1223);
 		array.insert(11111);
@@ -25,6 +24,7 @@ public class HeapSortTest {
 		array.insert(0);
 
 		System.out.println(array.heapSort(cmp));
+		System.out.println(array.isOrdered(cmp));
 	}
 
 }

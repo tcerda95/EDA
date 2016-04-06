@@ -5,46 +5,51 @@ import java.util.Comparator;
 @SuppressWarnings("unchecked")
 public class Heap<T> {
 	public static <E> void heapify(E[] array, int size, Comparator<E> cmp) {
-		int parent;
-		int current;
-		E elem;
-		for(int i = 1; i < size; i++) {
-			parent = getParent(i);
-			current = i;
-			elem = array[i];
-			while (current != 0 && cmp.compare(elem, array[parent]) > 0) {
-				array[current] = array[parent];
-				current = parent;
-				parent = getParent(current);
-			}
-			array[current] = elem;
-		}
+		for(int i = 1; i < size; i++)
+			moveUp(array, i, cmp);
 	}
 
 	public static <E> void sort(E[] array, int size, Comparator<E> cmp) {
 		heapify(array, size, cmp);
 
 		E last;
-		int current;
-		int max;
 		for (int i = size-1; i > 0; i--) {
 			last = array[i]; // guardo el último valor del árbol
 			array[i] = array[0]; // en i va el máximo
-			current = 0; // posición del último valor del árbol
-			while (getLeft(current) < i &&
-					cmp.compare(last, array[(max = getMaxChild(current, array, i, cmp))]) < 0) {
-				array[current] = array[max];
-				current = max;
-			}
-			array[current] = last;
+			array[0] = last;  // subo el último al primer lugar
+			moveDown(array, 0, i, cmp); // lo bajo :( como mucho hasta i-1
 		}
 	}
 
-	private static <E> int getMaxChild(int index, E[] array, int size, Comparator<E> cmp) {
+	private static <E> int moveUp(E[] array, int i, Comparator<E> cmp) {
+		int parent = getParent(i);
+		E elem = array[i];
+		while (i != 0 && cmp.compare(elem, array[parent]) > 0) {
+			array[i] = array[parent];
+			i = parent;
+			parent = getParent(parent);
+		}
+		array[i] = elem;
+		return i;
+	}
+
+	private static <E> int moveDown(E[] array, int i, int size, Comparator<E> cmp) {
+		int max = getMaxChild(array, i, size, cmp);
+		E elem = array[i];
+		while (max != -1 && cmp.compare(elem, array[max]) < 0) {
+			array[i] = array[max];
+			i = max;
+			max = getMaxChild(array, max, size, cmp);
+		}
+		array[i] = elem;
+		return i;
+	}
+
+	private static <E> int getMaxChild(E[] array, int index, int size, Comparator<E> cmp) {
 		int leftChild = getLeft(index);
 		int rightChild = getRight(index);
 		if (leftChild >= size)
-			throw new IllegalStateException("Childs out of bounds");
+			return -1; // out of bounds
 		if (rightChild == size)
 			return leftChild;
 		return cmp.compare(array[leftChild], array[rightChild]) > 0 ? leftChild : rightChild;
@@ -78,16 +83,10 @@ public class Heap<T> {
 		if (size == array.length)
 			return false;
 
-		int parentIndex = getParent(size);
 		int elemIndex = size++;
-
-		while (elemIndex != 0 && cmp.compare(elem, (T) array[parentIndex]) > 0) {
-			array[elemIndex] = array[parentIndex];
-			elemIndex = parentIndex;
-			parentIndex = getParent(parentIndex);
-		}
-
 		array[elemIndex] = elem;
+
+		moveUpwards(elemIndex);
 		return true;
 	}
 
@@ -97,21 +96,14 @@ public class Heap<T> {
 
 		T elem = (T) array[index];
 
-		T last = (T) array[--size];
-		int max;
+		array[index] = array[--size];	// reemplazo el valor del nodo a borrar por el último nodo
+		moveDown(index); 	// lo bajo :(
 
-		while (getLeft(index) < size &&   // is in bounds
-				cmp.compare(last, (T) array[ (max = getMaxChild(index)) ]) < 0) {
-			array[index] = array[max]; // pisar el padre por el máximo hijo mayor que él
-			index = max;	// bajo hacia el nodo que tenía el mayor hijo mayor
-		}
-
-		array[index] = last;
 		return elem;
 	}
 
 	public boolean remove(T elem) {
-		return remove(search(elem)) != null;
+		return remove(search(elem)) != null; // si encuentra el elemento, borra por índice
 	}
 
 	public int search(T elem) {
@@ -130,13 +122,12 @@ public class Heap<T> {
 		return searchLeft != -1 ? searchLeft : search(elem, getRight(index));
 	}
 
-	private int getMaxChild(int index) {
-		int leftChild = getLeft(index);
-		int rightChild = getRight(index);
-		if (leftChild >= size)
-			throw new IllegalStateException("Childs out of bounds");
-		if (rightChild == size)
-			return leftChild;
-		return cmp.compare((T) array[leftChild], (T) array[rightChild]) > 0 ? leftChild : rightChild;
+	private int moveDown(int index) {
+		return moveDown((T[]) array, index, size, cmp);
 	}
+
+	private int moveUpwards(int elemIndex) {
+		return moveUp((T[]) array, elemIndex, cmp);
+	}
+
 }
