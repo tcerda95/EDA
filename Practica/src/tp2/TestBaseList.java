@@ -7,9 +7,10 @@ public class TestBaseList {
 		list.add(2);
 		list.add(5);
 		list.add(7);
+		list.add(123);
 
 		System.out.println(list);
-		list = list.reverse();
+		list = list.reverseRec();
 		System.out.println(list);
 
 		BaseList<Integer> list2 = list.map(a -> 2*a);

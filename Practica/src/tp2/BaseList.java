@@ -38,6 +38,19 @@ public class BaseList<T> {
 		return prev;
 	}
 
+	public BaseList<T> reverseRec() {
+		return reverseRec(this);
+	}
+
+	private BaseList<T> reverseRec(BaseList<T> n) {
+		if (n.next == null)
+			return n;
+		BaseList<T> reversed = reverseRec(n.next);
+		n.next.next = n;
+		n.next = null;
+		return reversed;
+	}
+
 	public void add(T v) {
 		if (value != null) {
 			BaseList<T> list = new BaseList<T> (value, next);
