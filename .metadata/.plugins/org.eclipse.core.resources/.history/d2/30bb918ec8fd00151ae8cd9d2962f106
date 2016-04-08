@@ -1,0 +1,15 @@
+package tp3;
+
+public class PriorityQueue<T> {
+	
+	private static class Node {
+		Queue queue;
+		int priority;
+		public Node(Queue q, int p) {
+			queue = q;
+			priority = p;
+		}
+	}
+	
+	
+}

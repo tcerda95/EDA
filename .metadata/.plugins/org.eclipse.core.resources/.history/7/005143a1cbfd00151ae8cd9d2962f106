@@ -1,0 +1,11 @@
+package tp3;
+
+public class TestPriorityQueue {
+
+	public static void main(String[] args) {
+		PriorityQueue<Integer> queue = new PriorityList<>();
+		
+		queue.enqueue(8, 1);
+	}
+
+}
