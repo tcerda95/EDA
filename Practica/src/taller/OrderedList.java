@@ -20,7 +20,7 @@ public class OrderedList<T> implements Iterable<T> {
 		int [] min = new int[nodes.size()]; // guardamos los índices de los nodos minimales
 		E minValue;
 
-		newList.first = new Node<E>();
+		newList.first = new Node<E>(); // valor dummy para first
 		Node<E> prev = newList.first;
 		Node<E> current;
 
@@ -43,9 +43,9 @@ public class OrderedList<T> implements Iterable<T> {
 
 			for (int i = 0; i < j; i++) {
 				Node<E> next = nodes.get(min[i]).next;
-				if (next == null)
+				if (next == null) // mando las listas recorridas al comienzo del arreglo
 					swap(nodes, merged++, min[i]);
-				else
+				else	// avanzo el nodo
 					nodes.set(min[i], next);
 			}
 
@@ -54,7 +54,7 @@ public class OrderedList<T> implements Iterable<T> {
 			prev = current;
 		}
 
-		newList.first = newList.first.next;
+		newList.first = newList.first.next; // asignamos el verdadero first
 
 		long endTime = System.currentTimeMillis();
 		System.out.println("Time elapsed, otherMerge: " + (endTime - startTime));

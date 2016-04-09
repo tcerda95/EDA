@@ -14,6 +14,10 @@ public class Cronometer {
 		startTime = System.currentTimeMillis();
 	}
 
+	public void reset() {
+		startTime = System.currentTimeMillis();
+	}
+
 	public long timeElapsed() {
 		if (stopped)
 			return endTime - startTime;

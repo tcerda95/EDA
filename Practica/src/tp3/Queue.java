@@ -8,7 +8,7 @@ public class Queue<T> {
 	public void enqueue(T value) {
 		size += 1;
 		Node<T> n = new Node<T>(value);
-		
+
 		if (isEmpty()) {
 			first = n;
 			last = n;
@@ -18,7 +18,7 @@ public class Queue<T> {
 			last = n;
 		}
 	}
-	
+
 	public T dequeue() {
 		size -= 1;
 		if (isEmpty())
@@ -31,19 +31,17 @@ public class Queue<T> {
 	public boolean isEmpty() {
 		return first == null;
 	}
-	
+
 	public int size() {
 		return size;
 	}
-	
+
 	private static class Node<T> {
 		private T value;
 		private Node<T> next;
-		
+
 		public Node(T v) {
 			value = v;
 		}
 	}
-	
-
 }

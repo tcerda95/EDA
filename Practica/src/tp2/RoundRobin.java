@@ -42,6 +42,7 @@ public class RoundRobin {
 					tasks.remove();
 					System.out.println("Removing task: " + t);
 				}
+				System.out.println("List: " + tasks);
 			}
 
 		}

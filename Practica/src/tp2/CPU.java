@@ -10,7 +10,7 @@ public class CPU {
 	// retorna true si el trabajo sigue requiriendo procesador
 	public boolean process(Task t) throws InterruptedException {
 		long sleepTime = t.getProcessTimeNeeded() > processTime ? processTime : t.getProcessTimeNeeded();
-		Thread.sleep(sleepTime); // quizás debería ir en Task
+		Thread.sleep(sleepTime);
 		t.process(processTime);
 		return t.needsProcessing();
 	}
