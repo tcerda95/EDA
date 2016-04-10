@@ -2,11 +2,11 @@ package tp3;
 
 public class AverageManager {
 	private double sum;
-	private int amount;
+	private int count;
 
 	public AverageManager(double initialSum, int initialAmount) {
 		sum = initialSum;
-		amount = initialAmount;
+		count = initialAmount;
 	}
 
 	public AverageManager(double initialSum) {
@@ -18,9 +18,13 @@ public class AverageManager {
 	}
 
 	public double add(double x) {
-		amount += 1;
+		count += 1;
 		sum += x;
 		return getAverage();
+	}
+
+	public int incrementCount() {
+		return (count = count + 1);
 	}
 
 	public double getSum() {
@@ -28,10 +32,10 @@ public class AverageManager {
 	}
 
 	public double getAverage() {
-		return sum / amount;
+		return sum / count;
 	}
 
-	public int getAmount() {
-		return amount;
+	public int getCount() {
+		return count;
 	}
 }
