@@ -1,6 +1,7 @@
 package tp3;
 
 public class AverageManager {
+	private double max = Double.MIN_VALUE;
 	private double sum;
 	private int count;
 
@@ -18,6 +19,8 @@ public class AverageManager {
 	}
 
 	public double add(double x) {
+		if (x > max)
+			max = x;
 		count += 1;
 		sum += x;
 		return getAverage();
@@ -37,5 +40,9 @@ public class AverageManager {
 
 	public int getCount() {
 		return count;
+	}
+
+	public double getMax() {
+		return max;
 	}
 }

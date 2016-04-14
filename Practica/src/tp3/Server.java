@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class Server {
 	private static final Random rand = new Random();
+	private static final int timeInterval = 1;
 
 	private int attended;  // cantidad de trabajos atendidos
 	private TimedTask currentTask;  // trabajo actualmente atendido
@@ -27,7 +28,7 @@ public class Server {
 
 	public Queue<TimedTask> simulate(int simulationTime) {
 
-		for (int t = 0; t < simulationTime; t++) {
+		for (int t = 0; t < simulationTime; t += timeInterval) {
 			if (taskArrived())  // cada unidad de tiempo puede que llegue un proceso nuevo
 				queue.enqueue(generateTask(t));
 
@@ -38,7 +39,7 @@ public class Server {
 			}
 
 			if (isAttending()) {
-				currentTask.process(1);  // se procesa una unidad de tiempo
+				currentTask.process(timeInterval);  // se procesa una unidad de tiempo
 				if (!currentTask.needsProcessing())
 					attended++;
 			}
@@ -73,8 +74,8 @@ public class Server {
 		return rand.nextInt(maxServiceTime - minServiceTime + 1) + minServiceTime;
 	}
 
-	private TimedTask generateTask(int waitingTime) {
-		return new TimedTask(generateServiceTime(), waitingTime);
+	private TimedTask generateTask(int t) {
+		return new TimedTask(generateServiceTime(), t);
 	}
 
 }
