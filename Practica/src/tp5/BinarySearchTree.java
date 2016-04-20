@@ -1,9 +1,7 @@
 package tp5;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import tp2.ListSet;
@@ -211,32 +209,90 @@ public class BinarySearchTree<T> {
 	}
 
 	public Iterator<T> postorderIterator() {
-		List<T> array = new ArrayList<T>(size());
-		fillArrayPost(root, array, 0);
-		return array.iterator();
+		return new PostorderIterator<T>(root);
 	}
 
-	private int fillArrayPost(BinaryTree<T> t, List<T> array, int i) {
-		if (t == null)
-			return i;
-		i = fillArrayPost(t.left,array,i);
-		i = fillArrayPost(t.right,array,i);
-		array.add(i++, t.value);
-		return i;
+	private static class PostorderIterator<T> implements Iterator<T> {
+		private static class MarkableTree<T> {
+			private boolean marked;
+			BinaryTree<T> tree;
+
+			public MarkableTree(BinaryTree<T> t) {
+				tree = t;
+			}
+		}
+
+		// arriba de la pila debe quedar el nodo a devolver
+		Stack<MarkableTree<T>> stack = new Stack<>();
+
+		private void traverseTree() {
+			MarkableTree<T> t;
+			while (!(t = stack.peek()).marked) {
+				t.marked = true;
+				if (t.tree.hasRightChild())
+					stack.push(new MarkableTree<T>(t.tree.right));
+				if (t.tree.hasLeftChild())
+					stack.push(new MarkableTree<T>(t.tree.left));
+			}
+		}
+
+		public PostorderIterator(BinaryTree<T> root) {
+			stack.push(new MarkableTree<T>(root));
+			traverseTree();
+		}
+
+		@Override
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+
+		@Override
+		public T next() {
+			T value = stack.pop().tree.value;
+			if (hasNext())
+				traverseTree();
+			return value;
+		}
 	}
 
 	public Iterator<T> inorderIterator() {
-		List<T> array = new ArrayList<T>(size());
-		fillArrayIn(root, array, 0);
-		return array.iterator();
+		return new InorderIterator<T>(root);
 	}
 
-	private int fillArrayIn(BinaryTree<T> t, List<T> array, int i) {
-		if (t == null)
-			return i;
-		i = fillArrayIn(t.left, array, i);
-		array.add(i++, t.value);
-		return fillArrayIn(t.right, array, i);
+	private static class InorderIterator<T> implements Iterator<T> {
+		// arriba del stack está el nodo cuyo valor devolver
+		private Stack<BinaryTree<T>> stack = new Stack<>();
+
+		public InorderIterator(BinaryTree<T> root) {
+			stack.push(root);
+			BinaryTree<T> t;
+			while ((t = stack.peek()).hasLeftChild())
+				stack.push(t.left);
+		}
+
+		@Override
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+
+		@Override
+		public T next() {
+			BinaryTree<T> t = stack.pop();
+			T value = t.value;  // "me proceso" en este caso devolver value
+
+			// "proceso subarbol derecho" en este caso dejar la pila lista con
+			// los valores del subarbol derecho
+			if (t.hasRightChild()) {
+				stack.push(t.right); // "me guardo"; primero proceso subarbol izquierdo
+
+				// "proceso subarbol izquierdo"; en este caso dejar la pila lista con
+				// los valores del subarbol izquierdo
+				while ((t = stack.peek()).hasLeftChild())
+					stack.push(t.left);
+			}
+
+			return value;
+		}
 	}
 
 	public Iterator<T> preorderIterator() {
@@ -265,6 +321,10 @@ public class BinarySearchTree<T> {
 				stack.push(t.left);
 			return t.value;
 		}
+	}
+
+	public boolean sameLeavesOrder(BinarySearchTree<?> t) {
+		return BinaryTree.sameLeavesOrder(this.root, t.root);
 	}
 
 	@Override  // se tomó como criterio de igualdad que ambos árboles tengan los mismos elementos

@@ -8,6 +8,7 @@ public class Tests {
 	public static void main(String[] args) {
 		Comparator<Integer> cmp = ((a,b)->Integer.compare(a, b));
 		BinarySearchTree<Integer> tree1 = new BinarySearchTree<>(cmp);
+		BinarySearchTree<Integer> tree2 = new BinarySearchTree<>(cmp);
 
 		tree1.insert(10);
 		tree1.insert(14);
@@ -15,8 +16,17 @@ public class Tests {
 		tree1.insert(9);
 		tree1.insert(12);
 		tree1.insert(8);
+		tree1.insert(324);
 
+		tree2.insert(10);
+		tree2.insert(14);
+		tree2.insert(20);
+		tree2.insert(9);
+		tree2.insert(12);
+		tree2.insert(8);
+		tree2.insert(-1);
 
+		System.out.println("Same leaves order: " + tree1.sameLeavesOrder(tree2));
 		System.out.println(tree1.isAVL());
 
 		Iterator<Integer> iter = tree1.postorderIterator();

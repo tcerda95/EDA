@@ -3,8 +3,46 @@ package tp5;
 import java.util.Comparator;
 
 import tp2.Function;
+import tp3.Stack;
 
 public class BinaryTree<T> {
+
+	public static boolean sameLeavesOrder(BinaryTree<?> t1, BinaryTree<?> t2) {
+		if (t1 == null && t2 == null)
+			return true;
+		if (t1 == null || t2 == null)
+			return false;
+
+		Stack<BinaryTree<?>> stack1 = new Stack<>();
+		Stack<BinaryTree<?>> stack2 = new Stack<>();
+
+		stack1.push(t1);
+		stack2.push(t2);
+
+		while (!stack1.isEmpty() && !stack2.isEmpty()) {
+			BinaryTree<?> n1;
+			BinaryTree<?> n2;
+
+			while ((n1 = stack1.pop()).hasChildren()) {
+				if (n1.hasRightChild())
+					stack1.push(n1.right);
+				if (n1.hasLeftChild())
+					stack1.push(n1.left);
+			}
+
+			while ((n2 = stack2.pop()).hasChildren()) {
+				if (n2.hasRightChild())
+					stack2.push(n2.right);
+				if (n2.hasLeftChild())
+					stack2.push(n2.left);
+			}
+
+			if (!n1.value.equals(n2.value))
+				return false;
+		}
+
+		return stack1.isEmpty() && stack2.isEmpty();
+	}
 
 	public static boolean areReflected(BinaryTree<?> t1, BinaryTree<?> t2) {
 		if (t1 == null && t2 == null)
