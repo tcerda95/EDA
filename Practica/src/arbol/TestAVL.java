@@ -15,7 +15,11 @@ public class TestAVL {
 		tree.insert(76);
 		tree.insert(79);
 		tree.insert(93);
+		tree.insert(100);
+		tree.insert(150);
+		tree.insert(140);
 
+		System.out.println("AVL: " + tree.isAVL());
 		System.out.println(tree.toString());
 		System.out.println("Height: " + tree.getHeight());
 	}

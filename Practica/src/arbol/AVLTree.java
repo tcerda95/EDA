@@ -14,67 +14,67 @@ public class AVLTree<T> {
 		root = insert(value, root);
 	}
 
-	// TODO: están mal los factores de balance luego de rotaciones
 	private Node<T> insert(T value, Node<T> n) {
 		if (n == null)
 			return new Node<T>(value);
-
-		int childBF = 5; // para q no tire error de inicializacion más abajo
 		int comp = cmp.compare(value, n.value);
-
-		if (comp > 0) {
-			if (!n.hasRightChild())
-				n.BF -= 1;
-			else
-				childBF = n.right.BF;
+		if (comp > 0)
 			n.right = insert(value, n.right);
-
-			if (n.right.BF != 0 && n.right.BF != childBF)
-				n.BF -= 1;
-
-			if (n.BF == -2) { // desbalance provocado por subarbol derecho
-				if (n.right.BF == 1) // subarbol izquierdo del hijo: RL
-					n.right = rotRight(n.right);
-				n = rotLeft(n);		// subarbol derecho del hijo: RR
-			}
-
-		}
-		else if (comp < 0) {
-			if (!n.hasLeftChild())
-				n.BF += 1;
-			else
-				childBF = n.left.BF;
+		else if (comp < 0)
 			n.left = insert(value, n.left);
-
-			if (n.left.BF != 0 && childBF != n.left.BF)
-				n.BF += 1;
-
-			if (n.BF == 2) { // desbalance provocado por subarbol izquierdo
-				if (n.left.BF == -1) // subarbol derecho del hijo: LR
-					n.left = rotLeft(n.left);
-				n = rotRight(n);    // subarbol izquierdo del hijo: LL
-			}
+		n.updateHeight();
+		int bf = n.getBF();
+		if (bf < -1) {
+			if (n.right.getBF() > 0)
+				n.right = rotateRight(n.right);
+			n = rotateLeft(n);
 		}
-
+		else if (bf > 1) {
+			if (n.left.getBF() < 0)
+				n.left = rotateLeft(n.left);
+			n = rotateRight(n);
+		}
 		return n;
 	}
 
-	private Node<T> rotLeft(Node<T> n) {
-		Node<T> r = n.right;
-		n.BF = 0;
-		r.BF = 0;
-		n.right = r.left;
-		r.left = n;
-		return r;
+	public void remove(T value) {
+		root = remove(value, root);
 	}
 
-	private Node<T> rotRight(Node<T> n) {
-		Node<T> l = n.left;
-		n.BF = 0;
-		l.BF = 0;
-		n.left = l.right;
-		l.right = n;
-		return l;
+	private Node<T> remove(T value, Node<T> n) {
+		if (n == null)
+			return n;
+		int comp = cmp.compare(value, n.value);
+		if (comp != 0) {
+			if (comp < 0)
+				n.left = remove(value, n.left);
+			else if (comp > 0)
+				n.right = remove(value, n.right);
+			n.updateHeight();
+			return n;
+		}
+
+		// comp == 0
+
+
+	}
+
+	private Node<T> rotateLeft(Node<T> n) {
+		Node<T> right = n.right;
+		n.right = right.left;
+		right.left = n;
+		n.updateHeight();
+		right.updateHeight();
+		return right; // devolvemos lo q ahora ocupa el lugar de n
+	}
+
+	private Node<T> rotateRight(Node<T> n) {
+		Node<T> left = n.left;
+		n.left = left.right;
+		left.right = n;
+		n.updateHeight();
+		left.updateHeight();
+		return left; // devolvemos lo q ahora ocupa el lugar de n
 	}
 
 	public int getHeight() {
@@ -102,14 +102,57 @@ public class AVLTree<T> {
 		return str;
 	}
 
+	private static class Container {
+		private boolean isValid; // indica si el árbol es AVL
+		private int height;		 // contiene la altura del árbol
+	}
+
+	public boolean isAVL() {
+		return isAVL(root, null, null).isValid;
+	}
+
+	private Container isAVL(Node<T> n, T maxValue, T minValue) {
+		Container c = new Container();
+		if (n == null) {
+			c.isValid = true;
+			c.height = -1;
+			return c;
+		}
+		if (maxValue != null && cmp.compare(n.value, maxValue) > 0) {
+			c.isValid = false;
+			return c;
+		}
+		if (minValue != null && cmp.compare(n.value, minValue) < 0) {
+			c.isValid = false;
+			return c;
+		}
+		Container leftc = isAVL(n.left, n.value, minValue);
+		Container rightc = isAVL(n.right, maxValue, n.value);
+
+		if (!leftc.isValid || !rightc.isValid) {
+			c.isValid = false;
+			return c;
+		}
+
+		c.isValid = Math.abs(leftc.height - rightc.height) <= 1;
+		c.height = 1 + Integer.max(leftc.height, rightc.height);
+		return c;
+	}
+
 	private static class Node<T> {
 		private T value;
 		private Node<T> left;
 		private Node<T> right;
-		private int BF; // balance factor: leftHeight - rightHeight
+		private int height;
 
 		public Node(T v) {
 			value = v;
+		}
+
+		public void updateHeight() {
+			int lh = left == null ? -1 : left.height;
+			int rh = right == null ? -1 : right.height;
+			height = Integer.max(lh, rh) + 1;
 		}
 
 		public boolean hasChildren() {
@@ -126,6 +169,12 @@ public class AVLTree<T> {
 
 		public boolean hasBothChildren() {
 			return hasLeftChild() && hasRightChild();
+		}
+
+		public int getBF() {
+			int lh = left == null ? -1 : left.height;
+			int rh = right == null ? -1 : right.height;
+			return lh - rh;
 		}
 	}
 }
