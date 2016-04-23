@@ -7,6 +7,28 @@ import tp3.Stack;
 
 public class BinaryTree<T> {
 
+	public static <T> boolean isPostOrderSorted(BinaryTree<T> tree, Comparator<? super T> cmp) {
+		return isPostOrderSorted(tree, cmp, null) != null;
+	}
+
+	private static <T> T isPostOrderSorted(BinaryTree<T> tree, Comparator<? super T> cmp, T value) {
+		if (!tree.hasChildren() && value == null) { // es la primer hoja
+			return tree.value;
+		}
+		if (tree.hasLeftChild()) {
+			value = isPostOrderSorted(tree.left, cmp, value);
+			if (value == null)
+				return null;
+		}
+		if (tree.hasRightChild()) {
+			value = isPostOrderSorted(tree.right, cmp, value);
+			if (value == null)
+				return null;
+		}
+
+		return cmp.compare(value, tree.value) < 0 ? tree.value : null;
+	}
+
 	public static boolean sameLeavesOrder(BinaryTree<?> t1, BinaryTree<?> t2) {
 		if (t1 == null && t2 == null)
 			return true;

@@ -52,6 +52,7 @@ public class AVLTree<T> {
 				n.right = remove(value, n.right);
 			n.updateHeight();
 			return n;
+			//TODO: rebalancear
 		}
 
 		// comp == 0
