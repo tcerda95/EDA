@@ -1,7 +1,9 @@
 package tp5;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import tp2.ListSet;
@@ -206,6 +208,26 @@ public class BinarySearchTree<T> {
 			if (dequeued.hasRightChild())
 				q.enqueue(dequeued.right);
 		}
+	}
+
+	public List<T> getInOrder(int inf, int sup) {
+		List <T> list = new ArrayList<>(sup-inf+1);
+		if (inf > sup)
+			return list;
+		getInOrder(root, inf, sup, list, 1);
+		return list;
+	}
+
+	private int getInOrder(BinaryTree<T> t, int inf, int sup, List<T> list, int index) {
+		if (t == null)
+			return index;
+		index = getInOrder(t.left, inf, sup, list, index);
+		if (index > sup)
+			return index;
+		if (index >= inf)
+			list.add(t.value);
+		index += 1;
+		return getInOrder(t.right, inf, sup, list, index);
 	}
 
 	public Iterator<T> postorderIterator() {

@@ -1,11 +1,76 @@
 package tp5;
 
 import java.util.Comparator;
+import java.util.Set;
 
 import tp2.Function;
+import tp2.ListSet;
+import tp3.Queue;
 import tp3.Stack;
 
 public class BinaryTree<T> {
+
+	public static <T> boolean isHeap(BinaryTree<T> tree, Comparator<T> cmp) {
+		if (tree == null)
+			return true; // arbitrario
+
+		Queue<BinaryTree<T>> queue = new Queue<>();
+		boolean mayHaveChild = true; // indica si el árbol desencolado puede tener hijos
+
+		queue.enqueue(tree);
+		while (!queue.isEmpty()) {
+			BinaryTree<T> t = queue.dequeue();
+
+			if (t.left != null) {
+				if (!mayHaveChild || cmp.compare(t.left.value, t.value) <= 0)
+					return false;
+				queue.enqueue(t.left);
+			}
+			else
+				mayHaveChild = false;
+
+			if (t.right != null) {
+				if (!mayHaveChild || cmp.compare(t.right.value, t.value) <= 0)
+					return false;
+				queue.enqueue(t.right);
+			}
+			else
+				mayHaveChild = false;
+		}
+
+		return true;
+	}
+
+	public static <T> BinaryTree<T> spanning(BinaryTree<T> tree, T value) {
+		if (tree == null)
+			return null;
+		BinaryTree<T> span = null;
+		BinaryTree<T> leftSpan = spanning(tree.left, value);
+		BinaryTree<T> rightSpan = spanning(tree.right, value);
+		if (leftSpan != null || rightSpan != null || tree.value.equals(value))
+			span = new BinaryTree<T>(value, leftSpan, rightSpan);
+		return span;
+	}
+
+	public static <T> Set<BinaryTree<T>> findMatches(BinaryTree<T> t1, BinaryTree<T> t2) {
+		Set<BinaryTree<T>> set = new ListSet<>();
+		findMatches(t1,t2,set);
+		return set;
+	}
+
+	private static <T> boolean findMatches(BinaryTree<T> t1, BinaryTree<T> t2, Set<BinaryTree<T>> set) {
+		if (t1 == null && t2 == null)
+			return true;
+		if ((t1 == null && t2 != null) || (t1 != null && t2 == null))
+			return false;
+		boolean leftEquals = findMatches(t1.left, t2.left, set);
+		boolean rightEquals = findMatches(t1.right, t2.right, set);
+		if (leftEquals && rightEquals && t1.value.equals(t2.value)) {
+			set.add(t1);
+			return true;
+		}
+		return false;
+	}
 
 	public static <T> boolean isPostOrderSorted(BinaryTree<T> tree, Comparator<? super T> cmp) {
 		return isPostOrderSorted(tree, cmp, null) != null;
@@ -94,6 +159,12 @@ public class BinaryTree<T> {
 
 	public BinaryTree(T v) {
 		value = v;
+	}
+
+	public BinaryTree(T v, BinaryTree<T> l, BinaryTree<T> r) {
+		value = v;
+		left = l;
+		right = r;
 	}
 
 	public <S> BinaryTree<S> apply(Function<T,S> f) {

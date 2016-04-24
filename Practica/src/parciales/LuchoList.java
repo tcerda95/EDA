@@ -1,4 +1,4 @@
-package taller;
+package parciales;
 
 public class LuchoList<K, V> {
 	private static class Node<K, V> {
@@ -77,7 +77,7 @@ public class LuchoList<K, V> {
 	}
 
 	private void swapLessAccessed(Node<K, V> prev, Node<K, V> n) {
-		if (prev == null && n.next != null && n.accessed > n.next.accessed) {
+		if (n == first && n.next != null && n.accessed > n.next.accessed) {
 			first = n.next;
 			swapNext(prev, n);
 			prev = first;
