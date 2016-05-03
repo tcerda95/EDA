@@ -22,6 +22,18 @@ public class TestAVL {
 		System.out.println("AVL: " + tree.isAVL());
 		System.out.println(tree.toString());
 		System.out.println("Height: " + tree.getHeight());
+
+		tree.remove(1000);
+		tree.remove(140);
+		tree.remove(100);
+		tree.remove(63);
+		tree.remove(93);
+		tree.remove(50);
+		tree.remove(55);
+
+		System.out.println("AVL: " + tree.isAVL());
+		System.out.println(tree.toString());
+		System.out.println("Height: " + tree.getHeight());
 	}
 
 }

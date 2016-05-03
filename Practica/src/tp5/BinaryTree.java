@@ -1,6 +1,8 @@
 package tp5;
 
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import tp2.Function;
@@ -9,6 +11,26 @@ import tp3.Queue;
 import tp3.Stack;
 
 public class BinaryTree<T> {
+
+	public static <T> BinaryTree<T> buildFromList(List<T> values) {
+		Iterator<T> iter = values.iterator();
+		BinaryTree<T> tree = new BinaryTree<>(iter.next());
+
+		Queue<BinaryTree<T>> queue = new Queue<>();
+		queue.enqueue(tree);
+
+		while (iter.hasNext()) {
+			BinaryTree<T> parent = queue.dequeue();
+			parent.left = new BinaryTree<>(iter.next());
+			queue.enqueue(parent.left);
+			if (iter.hasNext()) {
+				parent.right = new BinaryTree<>(iter.next());
+				queue.enqueue(parent.right);
+			}
+		}
+
+		return tree;
+	}
 
 	public static <T> boolean isHeap(BinaryTree<T> tree, Comparator<T> cmp) {
 		if (tree == null)

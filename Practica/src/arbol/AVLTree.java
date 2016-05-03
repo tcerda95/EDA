@@ -2,12 +2,28 @@ package arbol;
 
 import java.util.Comparator;
 
+
 public class AVLTree<T> {
 	private Node<T> root;
 	private Comparator<T> cmp;
 
 	public AVLTree(Comparator<T> c) {
 		cmp = c;
+	}
+
+	public boolean contains(T value) {
+		return contains(value, root);
+	}
+
+	public boolean contains(T value, Node<T> t) {
+		if (t == null)
+			return false;
+		int comp = cmp.compare(value, t.value);
+		if (comp > 0)
+			return contains(value, t.right);
+		else if (comp < 0)
+			return contains(value, t.left);
+		return true;
 	}
 
 	public void insert(T value) {
@@ -23,6 +39,10 @@ public class AVLTree<T> {
 		else if (comp < 0)
 			n.left = insert(value, n.left);
 		n.updateHeight();
+		return rebalance(n);
+	}
+
+	private Node<T> rebalance(Node<T> n) {
 		int bf = n.getBF();
 		if (bf < -1) {
 			if (n.right.getBF() > 0)
@@ -45,19 +65,39 @@ public class AVLTree<T> {
 		if (n == null)
 			return n;
 		int comp = cmp.compare(value, n.value);
-		if (comp != 0) {
-			if (comp < 0)
-				n.left = remove(value, n.left);
-			else if (comp > 0)
-				n.right = remove(value, n.right);
-			n.updateHeight();
-			return n;
-			//TODO: rebalancear
+
+		if (comp < 0)
+			n.left = remove(value, n.left);
+		else if (comp > 0)
+			n.right = remove(value, n.right);
+		else {
+			if(!n.hasChildren())
+				return null;
+
+			if (!n.hasBothChildren())
+				return n.hasRightChild() ? n.right : n.left;
+
+			if (n.right.hasLeftChild())
+				n.value = removeMin(n.right.left, n.right); // devuelve el minímo mientras balancea
+			else {
+				n.value = n.right.value;
+				n.right = n.right.right;
+			}
 		}
 
-		// comp == 0
+		n.updateHeight();
+		return rebalance(n);
+	}
 
-
+	private T removeMin(Node<T> n, Node<T> prev) {
+		if (!n.hasLeftChild()) {
+			prev.left = n.right;
+			return n.value;
+		}
+		T min = removeMin(n.left, n);
+		n.updateHeight();
+		prev.left = rebalance(n);
+		return min;
 	}
 
 	private Node<T> rotateLeft(Node<T> n) {
