@@ -1,0 +1,62 @@
+package taller;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class PuzzleSolver {
+
+	public void printSolutionByStep(int[] initialConf, int emptyRow, int emptyCol) {
+		Queue<PuzzleState> q = new LinkedList<PuzzleState>();
+		q.offer(new PuzzleState(initialConf, null, emptyRow, emptyCol));
+		while (!solutionFound && !q.isEmpty()) {
+			PuzzleState state = q.poll();
+			if(state.isSolution()) {
+				state.printSolution();
+				return;
+			}
+			for (PuzzleState neighbor : state.neighbors()) {
+				if (/* algo */)
+			}
+		}
+	}
+	
+	private static class PuzzleState {
+		private int[] configuration;
+		private PuzzleState parent;
+		private int emptyRow, emptyCol;
+		
+		private static final int[] SOLUTION_STATE = {1, 2, 3, 4, 5, 6, 7, 8, 0};
+		private static final int ROW = 3;
+		private static final int COL = 3;
+		
+		public PuzzleState(int [] configuration, PuzzleState parent, int emptyRow, int emptyCol) {
+			this.configuration = configuration;
+			this.parent = parent;
+			this.emptyRow = emptyRow;
+			this.emptyCol = emptyCol;
+		}
+		
+		public boolean isSolution() {
+			for (int i = 0; i < SOLUTION_STATE.length; i++)
+				if (configuration[i] != SOLUTION_STATE[i]) 
+					return false;
+			return true;
+		}
+		
+		public void printSolution() {
+			if (parent != null)
+				parent.printSolution();
+			printState();
+		}
+		
+		public void printState() {
+			for(int i = 0; i < configuration.length; i++) {
+				if (i % ROW == 0)
+					System.out.println();
+				System.out.print(configuration[i]);
+			}
+		}
+		
+		
+	}
+}

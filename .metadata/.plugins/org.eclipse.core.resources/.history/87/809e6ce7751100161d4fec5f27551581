@@ -1,0 +1,94 @@
+package taller;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+
+public class PuzzleSolver {
+
+	public void printSolutionByStep(int[] initialConf, int emptyRow, int emptyCol) {
+		Queue<PuzzleState> q = new LinkedList<PuzzleState>();
+		Set<PuzzleState> visited = new HashSet<PuzzleState>();
+		q.offer(new PuzzleState(initialConf, null, emptyRow, emptyCol));
+		while (!q.isEmpty()) {
+			PuzzleState state = q.poll();
+			if(state.isSolution()) {
+				System.out.println("SOLUTION FOUND!");
+				state.printSolution();
+				System.out.println("Time elapsed: " + (System.currentTimeMillis() - t0)  );
+				return;
+			}
+			for (PuzzleState neighbor : state.neighbors()) {
+				if (!visited.contains(neighbor)) {
+					q.offer(neighbor);
+					visited.add(neighbor);
+				}
+			}
+		}
+	}
+	
+	private static class PuzzleState {
+		private int[] configuration;
+		private PuzzleState parent;
+		private int emptyRow, emptyCol;
+		private int hash;
+		
+		private static final int[] SOLUTION_STATE = {1, 2, 3, 4, 5, 6, 7, 8, 0};
+		private static final int ROW = 3;
+		private static final int COL = 3;
+		
+		public PuzzleState(int [] configuration, PuzzleState parent, int emptyRow, int emptyCol) {
+			this.configuration = configuration;
+			this.parent = parent;
+			this.emptyRow = emptyRow;
+			this.emptyCol = emptyCol;
+			this.hash = myHashCode();
+		}
+		
+		public boolean isSolution() {
+			for (int i = 0; i < SOLUTION_STATE.length; i++)
+				if (configuration[i] != SOLUTION_STATE[i]) 
+					return false;
+			return true;
+		}
+		
+		public void printSolution() {
+			if (parent != null)
+				parent.printSolution();
+			printState();
+		}
+		
+		public void printState() {
+			for(int i = 0; i < configuration.length; i++) {
+				if (i % ROW == 0)
+					System.out.println();
+				System.out.print(configuration[i]);
+			}
+		}
+		
+		public boolean equals(Object obj) {
+			if (obj == this)
+				return true;
+			if (obj == null)
+				return false;
+			if (!(obj instanceof PuzzleState))
+				return false;
+			for (int i = 0; i < configuration.length; i++)
+				if (configuration[i] != ((PuzzleState)obj).configuration[i])
+					return false;
+			return true;
+		}
+		
+		private int myHashCode() {
+			int ans = 0;
+			for (int i = 0; i < configuration.length; i++)
+				ans += Math.pow(10, i) * configuration[i];
+			return ans;
+		}
+		
+		public int hashCode() {
+			return hash;
+		}
+	}
+}

@@ -1,7 +1,0 @@
-package tp3;
-
-public interface PriorityQueue<T> {
-	public void enqueue(T elem);
-	public T dequeue();
-	public boolean isEmpty();
-}

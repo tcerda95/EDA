@@ -1,5 +1,0 @@
-package tp2;
-
-public interface TFunction<T, S> {
-	public S eval(T value);
-}
