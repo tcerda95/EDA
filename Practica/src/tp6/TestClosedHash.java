@@ -2,10 +2,10 @@ package tp6;
 
 import java.util.Random;
 
-public class TestSimpleMap {
+public class TestClosedHash {
 
 	public static void main(String[] args) {
-		SimpleMap<Integer,String> map = new MySimpleMap<>();
+		SimpleMap<Integer,String> map = new ClosedHash<>(5000);
 		Random rand = new Random();
 
 		map.put(0, "Z");
@@ -33,17 +33,13 @@ public class TestSimpleMap {
 		map.put(46, "AA");
 		map.put(-2, "AA");
 		map.put(99, "AA");
-		map.put(-2, "99");
 
 		map.remove(99);
 		map.remove(20);
 		map.remove(2);
-		map.remove(2);
-
-		map.put(2, "2");
 
 		for(int i = 0; i < 8000; i++) {
-			int r = rand.nextInt(60000);
+			int r = rand.nextInt(40000);
 			map.put(r, "A" + i);
 		}
 

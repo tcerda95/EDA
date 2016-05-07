@@ -1,6 +1,7 @@
 package tp6;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -104,12 +105,10 @@ public class MySimpleMap<K, V> implements SimpleMap<K,V> {
 
 	@Override
 	public Collection<V> values() {
-		Collection<V> list = new LinkedList<>();
-		for (int i = 0; i < numberOfBuckets(); i++) {
-			for (Node<K,V> n : array[i]) {
+		Collection<V> list = new ArrayList<>(size());
+		for (int i = 0; i < numberOfBuckets(); i++)
+			for (Node<K,V> n : array[i])
 				list.add(n.getValue());
-			}
-		}
 		return list;
 	}
 
