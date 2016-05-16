@@ -1,4 +1,4 @@
-package grafo2daVer;
+package tp7;
 
 public class TestGraph {
 

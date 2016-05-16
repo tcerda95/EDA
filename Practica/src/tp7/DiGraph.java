@@ -1,4 +1,4 @@
-package grafo2daVer;
+package tp7;
 
 public class DiGraph<V, E extends ArcGraph> extends GraphAdjList<V, E> {
 

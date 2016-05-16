@@ -1,4 +1,4 @@
-package grafo2daVer;
+package tp7;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,12 +21,13 @@ public abstract class GraphAdjList<V, E extends ArcGraph> {
 	protected class Node {
 		public V info;
 		public boolean visited;
-		// coloreo, etc.
+		public int tag;
 		public List<Arc> adj;
 
 		public Node(V info) {
 			this.info = info;
 			this.visited = false;
+			this.tag = 0;
 			this.adj = new ArrayList<Arc>();
 		}
 
@@ -184,8 +185,8 @@ public abstract class GraphAdjList<V, E extends ArcGraph> {
 	protected void clearMarks() {
 		for (Node n : getNodes()) {
 			n.visited = false;
+			n.tag = 0;
 		}
-
 	}
 
 	public List<V> DFS(V origin) {
